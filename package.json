@@ -4,7 +4,7 @@
   "description": "A discord bot that notifies users when someone joins a voice chat",
   "main": "index.js",
   "scripts": {
-    "start": "tsc && node index.js"
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC",
