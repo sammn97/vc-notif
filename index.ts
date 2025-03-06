@@ -1,7 +1,6 @@
 import * as dotenv from 'dotenv';
 import { ChannelType, Client, GatewayIntentBits, TextChannel } from 'discord.js';
 import express from 'express';
-import cron from "node-cron";
 
 dotenv.config();
 
@@ -58,4 +57,5 @@ async function pingURL() {
 }
 
 // Schedule the ping task to run every 5 minutes
+var cron = require('node-cron');
 cron.schedule("*/5 * * * *", pingURL);

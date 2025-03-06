@@ -38,7 +38,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv = __importStar(require("dotenv"));
 const discord_js_1 = require("discord.js");
 const express_1 = __importDefault(require("express"));
-const node_cron_1 = __importDefault(require("node-cron"));
+// import cron from "node-cron";
+var cron = require('node-cron');
 dotenv.config();
 const { DISCORD_TOKEN } = process.env;
 const app = (0, express_1.default)();
@@ -84,4 +85,4 @@ function pingURL() {
     });
 }
 // Schedule the ping task to run every 5 minutes
-node_cron_1.default.schedule("*/1 * * * *", pingURL);
+cron.schedule("*/5 * * * *", pingURL);
