@@ -38,15 +38,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv = __importStar(require("dotenv"));
 const discord_js_1 = require("discord.js");
 const express_1 = __importDefault(require("express"));
+const node_cron_1 = __importDefault(require("node-cron"));
 dotenv.config();
 const { DISCORD_TOKEN } = process.env;
 const app = (0, express_1.default)();
 const port = 3000;
-app.get('/', (req, res) => res.send('Hello World!'));
-app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`));
+app.get('/', (req, res) => {
+    console.log(`[${new Date().toISOString()}] Ping!`);
+    res.send(`[${new Date().toISOString()}] Hello World!`);
+});
+app.listen(port, () => {
+    console.log(`[${new Date().toISOString()}] Example app listening at http://localhost:${port}`);
+});
 const bot = new discord_js_1.Client({ intents: [discord_js_1.GatewayIntentBits.Guilds, discord_js_1.GatewayIntentBits.GuildVoiceStates] });
 bot.once('ready', () => {
-    console.log('Ready!');
+    console.log(`[${new Date().toISOString()}] Ready!`);
 });
 bot.on('voiceStateUpdate', (oldState, newState) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
@@ -61,3 +67,21 @@ bot.on('voiceStateUpdate', (oldState, newState) => __awaiter(void 0, void 0, voi
     }
 }));
 bot.login(DISCORD_TOKEN);
+// Function to ping the URL and log the response time
+function pingURL() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const url = "https://massive-nerissa-sammn97.koyeb.app/";
+        const start = Date.now();
+        try {
+            const response = yield fetch(url);
+            const end = Date.now();
+            const responseTime = end - start;
+            console.log(`[${new Date().toISOString()}] Ping to ${url} - Response time: ${responseTime}ms`);
+        }
+        catch (error) {
+            console.error(`[${new Date().toISOString()}] Error pinging ${url}:`, error);
+        }
+    });
+}
+// Schedule the ping task to run every 5 minutes
+node_cron_1.default.schedule("*/1 * * * *", pingURL);

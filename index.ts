@@ -1,19 +1,30 @@
 import * as dotenv from 'dotenv';
 import { ChannelType, Client, GatewayIntentBits, TextChannel } from 'discord.js';
 import express from 'express';
+import cron from "node-cron";
+
 dotenv.config();
+
 const { DISCORD_TOKEN } = process.env;
 
 const app = express();
-const port = 8080;
+const port = 3000;
 
-app.get('/', (req, res) => res.send('Hello World!'));
+app.get('/', (req, res) => {
+  console.log(`[${new Date().toISOString()}] Ping!`);
 
-app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`));
+  res.send(`[${new Date().toISOString()}] Hello World!`);
+});
+
+app.listen(port, () => {
+  console.log(
+    `[${new Date().toISOString()}] Example app listening at http://localhost:${port}`
+  );
+});
 
 const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] });
 bot.once('ready', () => {
-    console.log('Ready!');
+    console.log(`[${new Date().toISOString()}] Ready!`);
 })
 
 bot.on('voiceStateUpdate', async (oldState, newState) => {
@@ -30,3 +41,21 @@ bot.on('voiceStateUpdate', async (oldState, newState) => {
 
 bot.login(DISCORD_TOKEN);
 
+// Function to ping the URL and log the response time
+async function pingURL() {
+  const url = "https://massive-nerissa-sammn97.koyeb.app/";
+  const start = Date.now();
+  try {
+    const response = await fetch(url);
+    const end = Date.now();
+    const responseTime = end - start;
+    console.log(
+      `[${new Date().toISOString()}] Ping to ${url} - Response time: ${responseTime}ms`
+    );
+  } catch (error) {
+    console.error(`[${new Date().toISOString()}] Error pinging ${url}:`, error);
+  }
+}
+
+// Schedule the ping task to run every 5 minutes
+cron.schedule("*/5 * * * *", pingURL);
